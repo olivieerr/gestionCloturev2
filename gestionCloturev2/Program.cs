@@ -13,25 +13,25 @@ namespace gestionCloturev2
         {
             Console.WriteLine("Hello World!");
 
-            string connStr = "server=192.168.1.103/phpmyadmin;user=essai;database=gsb_frais;port=3306;password=secret";
+            string connStr = "server=naseb3ef3.myqnapcloud.com;port=3306;user=usergsb;database=gsb_frais;password=secret";
             MySqlConnection conn = new MySqlConnection(connStr);
             try
             {
                 Console.WriteLine("connecting to MySQL...");
                 conn.Open();
 
-                string sql = "SELECT nom FROM visiteur WHERE id=a131";
+                string sql = "SELECT nom FROM visiteur WHERE id='a131'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 object result = cmd.ExecuteScalar();
                 if (result != null)
                 {
                     string nom = Convert.ToString(result);
-                    Console.WriteLine("Le nom du visiteur est : " + nom);
+                    Console.WriteLine(DateTime.Now.ToString() + " Le nom du visiteur est : " + nom);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("echec de la connexion");
+                Console.WriteLine(DateTime.Now.ToString() + " echec de la connexion : " + ex.Message);
             }
 
             conn.Close();
