@@ -9,6 +9,12 @@ namespace gestionCloturev2
     {
         abstract class GestionDate
         {
+            /** fonction statique getMoisPrecedent
+             * Retourne uniquement le mois précedent par rapport au mois courant
+             * sous forme "mm"
+             * 
+             * @return string moisPrecedent
+             */
             public static string getMoisPrecedent()
             {
                 //déclaration des variables
@@ -31,6 +37,12 @@ namespace gestionCloturev2
                 return moisPrecedent;
                 
             }
+            /** fonction statique getMoisPrecedent
+            * Retourne uniquement le mois précedent par rapport à la date envoyée en paramètre
+            * sous forme "mm"
+            * 
+            * @return string moisPrecedent
+            */
             public static string getMoisPrecedent(DateTime date)
             {
                 int num = date.Month;
@@ -51,7 +63,8 @@ namespace gestionCloturev2
 
             /** 
              * Fonction statique getMoisSuivant
-             * Retourne sous le mois suivant le mois actuel sous forme "mm"
+             * Retourne le mois suivant par rapport au mois courant 
+             * sous forme "mm"
              * 
              * @return string moisSuivant
              * 
@@ -80,7 +93,8 @@ namespace gestionCloturev2
 
             /**
              *  Fonction statique getMoisSuivant
-             * Retourne sous le mois suivant le mois actuel sous forme "mm"
+             * Retourne le mois suivant par rapport à la date envoyée en paramètre
+             * sous forme "mm"
              * 
              * @param DateTime date
              * 
@@ -114,9 +128,9 @@ namespace gestionCloturev2
              */
             public static bool entre(int jour1, int jour2)
             {
-                //DateTime date = new DateTime(2021, 3, 9);
+                //DateTime date = new DateTime(2021, 3, 11);
                 //int jourActuel = date.Day;
-                 int jourActuel = DateTime.Now.Day;
+                int jourActuel = DateTime.Now.Day;
                 if (jour1 < jourActuel && jourActuel < jour2)
                 {
                     return true;
@@ -126,7 +140,7 @@ namespace gestionCloturev2
             }
 
             /** 
-             * fonction entre qui retourne vrai si la date actuelle se situe entre les 2 jours reçus en parametre
+             * fonction entre qui retourne vrai si la date actuelle se situe entre les 2 jours reçus en paramètre
              * 
              * @param1 int jour1
              * @param2 int jour2
@@ -148,6 +162,37 @@ namespace gestionCloturev2
             }
         }
 
+        /**
+         * 
+         * La fonction connexion permettout d'abord de se connecter à la BDD distante puis de mttre à jour celle-ci
+         * en fonction du mois courant recu en parametre
+         * 
+         * @param1 string date sous forme aaaamm
+         * 
+         */
+        static void connexion(string date)
+        {
+            string connStr = "server=naseb3ef3.myqnapcloud.com;port=3306;user=usergsb;database=gsb_frais;password=secret";
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("connecting to MySQL...");
+                conn.Open();
+
+                string sql = "UPDATE fichefrais SET idetat = 'CL' WHERE mois =" + date;
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Requête executée !");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(DateTime.Now.ToString() + " echec de la connexion : " + ex.Message);
+            }
+
+            conn.Close();
+            Console.WriteLine("Done");
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -160,29 +205,8 @@ namespace gestionCloturev2
             Console.WriteLine(moisS);
             Console.WriteLine(jour);
 
-            string connStr = "server=naseb3ef3.myqnapcloud.com;port=3306;user=usergsb;database=gsb_frais;password=secret";
-            MySqlConnection conn = new MySqlConnection(connStr);
-            try
-            {
-                Console.WriteLine("connecting to MySQL...");
-                conn.Open();
+            connexion("202012");
 
-                string sql = "SELECT nom FROM visiteur WHERE id='a17'";
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-                object result = cmd.ExecuteScalar();
-                if (result != null)
-                {
-                    string nom = Convert.ToString(result);
-                    Console.WriteLine(DateTime.Now.ToString() + " Le nom du visiteur est : " + nom);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(DateTime.Now.ToString() + " echec de la connexion : " + ex.Message);
-            }
-
-            conn.Close();
-            Console.WriteLine("Done");
         }
     }
 }
