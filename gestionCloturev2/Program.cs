@@ -131,7 +131,7 @@ namespace gestionCloturev2
                 //DateTime date = new DateTime(2021, 3, 11);
                 //int jourActuel = date.Day;
                 int jourActuel = DateTime.Now.Day;
-                if (jour1 < jourActuel && jourActuel < jour2)
+                if (jour1 <= jourActuel && jourActuel <= jour2)
                 {
                     return true;
                 }
@@ -153,7 +153,7 @@ namespace gestionCloturev2
                 //DateTime date = new DateTime(2021, 3, 9);
                 //int jourActuel = date.Day;
                 int jourActuel= date.Day;
-                if (jour1 < jourActuel && jourActuel < jour2)
+                if (jour1 <= jourActuel && jourActuel <= jour2)
                 {
                     return true;
                 }
@@ -164,14 +164,22 @@ namespace gestionCloturev2
 
         /**
          * 
-         * La fonction connexion permettout d'abord de se connecter à la BDD distante puis de mttre à jour celle-ci
+         * La fonction clotureFicheFrais permettout d'abord de se connecter à la BDD distante puis de mttre à jour celle-ci
          * en fonction du mois courant recu en parametre
          * 
          * @param1 string date sous forme aaaamm
          * 
          */
-        static void connexion(string date)
+        static void clotureFicheFrais(string date)
         {
+            
+            //pour test de date
+            DateTime dateTest = new DateTime(2021, 01, 20);
+
+            if (GestionDate.entre(1,10, dateTest))
+            {
+
+            
             string connStr = "server=naseb3ef3.myqnapcloud.com;port=3306;user=usergsb;database=gsb_frais;password=secret";
             MySqlConnection conn = new MySqlConnection(connStr);
             try
@@ -179,33 +187,115 @@ namespace gestionCloturev2
                 Console.WriteLine("connecting to MySQL...");
                 conn.Open();
 
-                string sql = "UPDATE fichefrais SET idetat = 'CL' WHERE mois =" + date;
+                string sql = "UPDATE fichefrais SET idetat = 'CL', datemodif = now()  WHERE idetat = 'CR' AND mois =" + date;
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Requête executée !");
+                Console.WriteLine("Requête de clôture executée !");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(DateTime.Now.ToString() + " echec de la connexion : " + ex.Message);
+                Console.WriteLine(DateTime.Now.ToString() + " echec de la clotureFicheFrais : " + ex.Message);
             }
 
             conn.Close();
             Console.WriteLine("Done");
+            }
+            else
+            {
+                Console.WriteLine("Nous ne sommes pas entre le 1 et le 10 du mois");
+            }
+        }
+
+
+        /**
+         * Fonction miseEnRemboursement 
+         * Fonction qui permet de modifier le statut des fiches de frais à "rembourser" (RB) 
+         * si le comptable ne l'a pas deja fait
+         * 
+         * @param1 String date sous forme aaaamm
+         * 
+         */
+        static void miseEnRemboursement(string date)
+        {
+            if (GestionDate.entre(20, 31))
+            {
+
+            
+            string connStr = "server=naseb3ef3.myqnapcloud.com;port=3306;user=usergsb;database=gsb_frais;password=secret";
+            MySqlConnection conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("connecting to MySQL...");
+                conn.Open();
+
+                string sql = "UPDATE fichefrais SET idetat = 'RB' WHERE idetat = 'VA' AND mois =" + date;
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Requête de mise en remboursement executée !");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(DateTime.Now.ToString() + " echec de la clotureFicheFrais : " + ex.Message);
+            }
+
+            conn.Close();
+            Console.WriteLine("Done");
+            }
+            else
+            {
+                Console.WriteLine("Nous ne sommes pas entre le 20 et la fin du mois");
+            }
         }
 
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            string moisA = DateTime.Now.Month.ToString("D2");
-            string moisP = GestionDate.getMoisPrecedent();
+            DateTime date = new DateTime(2021, 01, 15);
+            string annee = date.Year.ToString();
+            string moisA = date.Month.ToString("D2");
+            string moisP = GestionDate.getMoisPrecedent(date);
+            //string moisA = DateTime.Now.Month.ToString("D2");
+            //string moisP = GestionDate.getMoisPrecedent();
             string moisS = GestionDate.getMoisSuivant();
             bool jour = GestionDate.entre(10, 20);
             Console.WriteLine(moisP);
             Console.WriteLine(moisA);
             Console.WriteLine(moisS);
             Console.WriteLine(jour);
+            Console.WriteLine(annee);
 
-            connexion("202012");
+            //Concatenation de la date pour obtenir la fomre aaaamm
+            string testDate = annee+moisP;
+
+            Console.WriteLine(testDate);
+
+            clotureFicheFrais(testDate);
+            miseEnRemboursement(testDate);
+
+            //Sommes-nous entre le 1 et le 10 du mois courant ?
+            /*if (GestionDate.entre(1, 10, date))
+            {
+                clotureFicheFrais("202012");
+            }
+            else
+            {
+                Console.WriteLine("Nous ne sommes pas entre le 1 et le 10 du mois");
+            }*/
+
+            //sommes-nous entre le 20 et la fin du mois ?
+            /*if (GestionDate.entre(20, 31, date))
+            {
+                miseEnRemboursement(testDate);
+            }
+            else
+            {
+                Console.WriteLine("Nous ne sommes pas entre le 20 et la fin du mois");
+            }*/
+
+            //clotureFicheFrais("202012");
+            //miseEnRemboursement("202012");
+
+
 
         }
     }
