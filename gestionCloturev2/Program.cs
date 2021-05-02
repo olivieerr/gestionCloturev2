@@ -1,12 +1,16 @@
 ﻿using System;
 
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace gestionCloturev2
 {
     class Program
     {
+
+
+        //date de test
+        //static DateTime dateTest = new DateTime(2021, 01, 31);
+
         abstract class GestionDate
         {
             /** fonction statique getMoisPrecedent
@@ -105,14 +109,14 @@ namespace gestionCloturev2
             {
                 int num = date.Month;
                 string moisSuivant;
-                if (num == 1)
+                if (num == 12)
                 {
-                    int mois = 12;
+                    int mois = 1;
                     moisSuivant = mois.ToString("D2");
                 }
                 else
                 {
-                    int mois = num - 1;
+                    int mois = num + 1;
                     moisSuivant = mois.ToString("D2");
                 }
 
@@ -128,8 +132,7 @@ namespace gestionCloturev2
              */
             public static bool entre(int jour1, int jour2)
             {
-                //DateTime date = new DateTime(2021, 3, 11);
-                //int jourActuel = date.Day;
+                //initialisation au jour actuel
                 int jourActuel = DateTime.Now.Day;
                 if (jour1 <= jourActuel && jourActuel <= jour2)
                 {
@@ -150,8 +153,7 @@ namespace gestionCloturev2
              */
             public static bool entre(int jour1, int jour2, DateTime date)
             {
-                //DateTime date = new DateTime(2021, 3, 9);
-                //int jourActuel = date.Day;
+                
                 int jourActuel= date.Day;
                 if (jour1 <= jourActuel && jourActuel <= jour2)
                 {
@@ -164,19 +166,19 @@ namespace gestionCloturev2
 
         /**
          * 
-         * La fonction clotureFicheFrais permettout d'abord de se connecter à la BDD distante puis de mttre à jour celle-ci
+         * La fonction clotureFicheFrais permet tout d'abord de se connecter à la BDD distante puis de mettre à jour celle-ci
          * en fonction du mois courant recu en parametre
          * 
          * @param1 string date sous forme aaaamm
          * 
          */
-        static void clotureFicheFrais(string date)
+        static void clotureFicheFrais()
         {
-            
-            //pour test de date
-            DateTime dateTest = new DateTime(2021, 01, 20);
 
-            if (GestionDate.entre(1,10, dateTest))
+            string date = formatDate();
+            Console.WriteLine(date); //a supprimer
+
+            if (GestionDate.entre(1,10))
             {
 
             
@@ -184,13 +186,13 @@ namespace gestionCloturev2
             MySqlConnection conn = new MySqlConnection(connStr);
             try
             {
-                Console.WriteLine("connecting to MySQL...");
+                Console.WriteLine("connecting to MySQL...");    //a supprimer            
                 conn.Open();
 
                 string sql = "UPDATE fichefrais SET idetat = 'CL', datemodif = now()  WHERE idetat = 'CR' AND mois =" + date;
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Requête de clôture executée !");
+                Console.WriteLine("Requête de clôture executée !"); //A supprimer
             }
             catch (Exception ex)
             {
@@ -198,11 +200,11 @@ namespace gestionCloturev2
             }
 
             conn.Close();
-            Console.WriteLine("Done");
+            Console.WriteLine("Done"); //A suprrimer
             }
             else
             {
-                Console.WriteLine("Nous ne sommes pas entre le 1 et le 10 du mois");
+                Console.WriteLine("Nous ne sommes pas entre le 1 et le 10 du mois"); // a suppruimer
             }
         }
 
@@ -215,9 +217,14 @@ namespace gestionCloturev2
          * @param1 String date sous forme aaaamm
          * 
          */
-        static void miseEnRemboursement(string date)
+        static void miseEnRemboursement()
         {
-            if (GestionDate.entre(20, 31))
+            
+            string date = formatDate();
+
+            Console.WriteLine(date);
+
+            if (GestionDate.entre(20, 31, dateTest))
             {
 
             
@@ -225,13 +232,13 @@ namespace gestionCloturev2
             MySqlConnection conn = new MySqlConnection(connStr);
             try
             {
-                Console.WriteLine("connecting to MySQL...");
+                Console.WriteLine("connecting to MySQL..."); // Asupprimer
                 conn.Open();
 
                 string sql = "UPDATE fichefrais SET idetat = 'RB' WHERE idetat = 'VA' AND mois =" + date;
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Requête de mise en remboursement executée !");
+                Console.WriteLine("Requête de mise en remboursement executée !"); //a supprimer
             }
             catch (Exception ex)
             {
@@ -243,60 +250,48 @@ namespace gestionCloturev2
             }
             else
             {
-                Console.WriteLine("Nous ne sommes pas entre le 20 et la fin du mois");
+                Console.WriteLine("Nous ne sommes pas entre le 20 et la fin du mois"); //A supprimer
             }
+        }
+
+        /** Fonction formatDatePrecedent
+         * a pour but de formater la date sous forme aaaamm pour l'insertion dans la base de données
+         * 
+         * @return string date sous forme aaaamm
+         * 
+         */
+        static string formatDate()
+        {
+
+            string precedent = GestionDate.getMoisPrecedent();            
+
+            //Récupération de l'année 
+            int annee = DateTime.Now.Year;          
+
+            if (precedent == "12")
+            {
+                //on reduit d'une année et on convertit en string
+                string moins = (annee - 1).ToString();
+
+                //On retourne le format de la date sous forme aaaamm 
+                return moins + precedent;
+            }
+            else
+            {
+                return annee + precedent;
+            }
+           
+            
+
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            DateTime date = new DateTime(2021, 01, 15);
-            string annee = date.Year.ToString();
-            string moisA = date.Month.ToString("D2");
-            string moisP = GestionDate.getMoisPrecedent(date);
-            //string moisA = DateTime.Now.Month.ToString("D2");
-            //string moisP = GestionDate.getMoisPrecedent();
-            string moisS = GestionDate.getMoisSuivant();
-            bool jour = GestionDate.entre(10, 20);
-            Console.WriteLine(moisP);
-            Console.WriteLine(moisA);
-            Console.WriteLine(moisS);
-            Console.WriteLine(jour);
-            Console.WriteLine(annee);
+            Console.WriteLine("Hello World!"); //a supprimer            
 
-            //Concatenation de la date pour obtenir la fomre aaaamm
-            string testDate = annee+moisP;
-
-            Console.WriteLine(testDate);
-
-            clotureFicheFrais(testDate);
-            miseEnRemboursement(testDate);
-
-            //Sommes-nous entre le 1 et le 10 du mois courant ?
-            /*if (GestionDate.entre(1, 10, date))
-            {
-                clotureFicheFrais("202012");
-            }
-            else
-            {
-                Console.WriteLine("Nous ne sommes pas entre le 1 et le 10 du mois");
-            }*/
-
-            //sommes-nous entre le 20 et la fin du mois ?
-            /*if (GestionDate.entre(20, 31, date))
-            {
-                miseEnRemboursement(testDate);
-            }
-            else
-            {
-                Console.WriteLine("Nous ne sommes pas entre le 20 et la fin du mois");
-            }*/
-
-            //clotureFicheFrais("202012");
-            //miseEnRemboursement("202012");
-
-
-
+            clotureFicheFrais();
+            miseEnRemboursement();
+            
         }
     }
 }
