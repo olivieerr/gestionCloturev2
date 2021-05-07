@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Timers;
-
-//using MySql.Data.MySqlClient;
 using Gsb.gestionCloturev2.logic;
 
 namespace gestionCloturev2
@@ -14,18 +12,19 @@ namespace gestionCloturev2
         //static DateTime dateTest = new DateTime(2021, 01, 31);     
 
         private static System.Timers.Timer timer;
+        private const int TEMPS = 10000; // A modifier en fonction de la durée souhaitée
 
         private static void rebours(Object source, ElapsedEventArgs e)
         {
-            ClotureLogic toto = new ClotureLogic();
+            ClotureLogic service = new ClotureLogic();
 
-            toto.clotureFicheFrais();
-            toto.miseEnRemboursement();
+            service.clotureFicheFrais();
+            service.miseEnRemboursement();
         }
         private static void SetTimer()
         {
-            // Create a timer with a two second interval.
-            timer = new System.Timers.Timer(10000);
+            
+            timer = new System.Timers.Timer(TEMPS);
             // Hook up the Elapsed event for the timer. 
             timer.Elapsed += rebours;
             timer.AutoReset = true;

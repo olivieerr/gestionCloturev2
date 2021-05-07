@@ -6,11 +6,10 @@ namespace Gsb.gestionCloturev2.logic
 
     public abstract class GestionDate
     {
-        ///<summary>fonction statique getMoisPrecedent
-        ///retourne uniquement le mois précedent par rapport à la date envoyée en paramètre
-        ///sous forme "mm"
-        ///</summary>
-        ///<returns>string moisPrecedent</returns>
+        /// <summary>fonction statique getMoisPrecedent
+        /// retourne uniquement le mois précedent par rapport à la date envoyée en paramètre
+        /// sous forme "mm"</summary>
+        /// <returns>string moisPrecedent</returns>
         public static string getMoisPrecedent()
         {
             //déclaration des variables
@@ -35,13 +34,11 @@ namespace Gsb.gestionCloturev2.logic
         }
 
 
-        ///<summary>
-        ///fonction statique getMoisPrecedent
+        /// <summary>fonction statique getMoisPrecedent
         /// Retourne uniquement le mois précedent par rapport à la date envoyée en paramètre
-        /// sous forme "mm"
-        ///</summary>
-        ///<param name="date">date</param>
-        ///<returns>string moisPrecedent</returns>
+        /// sous forme "mm"</summary>
+        /// <param name="date">date</param>
+        /// <returns>string moisPrecedent</returns>
         public static string getMoisPrecedent(DateTime date)
         {
             int num = date.Month;
@@ -60,12 +57,10 @@ namespace Gsb.gestionCloturev2.logic
             return moisPrecedent;
         }
 
-        ///<summary>
-        ///Fonction statique getMoisSuivant
-        ///Retourne le mois suivant par rapport au mois courant 
-        /// sous forme "mm"
-        ///</summary>
-        ///<returns>string moisSuivant</returns>
+        /// <summary>Fonction statique getMoisSuivant
+        /// Retourne le mois suivant par rapport au mois courant
+        /// sous forme "mm"</summary>
+        /// <returns>string moisSuivant</returns>
         public static string getMoisSuivant()
         {
             //déclaration des variables
@@ -88,13 +83,11 @@ namespace Gsb.gestionCloturev2.logic
             return moisSuivant;
         }
 
-        ///<summary>
-        ///Fonction statique getMoisSuivant
+        /// <summary>Fonction statique getMoisSuivant
         /// Retourne le mois suivant par rapport à la date envoyée en paramètre
-        /// sous forme "mm"
-        ///</summary>
-        ///<param>DateTime date</param>
-        ///<returns>string moisSuivant</returns>
+        /// sous forme "mm"</summary>
+        /// <param name="date">The date.</param>
+        /// <returns>string moisSuivant</returns>
         public static string getMoisSuivant(DateTime date)
         {
             int num = date.Month;
@@ -131,21 +124,11 @@ namespace Gsb.gestionCloturev2.logic
 
         }
 
-        /** 
-         * fonction entre qui retourne vrai si la date actuelle se situe entre les 2 jours reçus en paramètre
-         * 
-         * @param1 int jour1
-         * @param2 int jour2
-         * @param3 DateTime date
-         * 
-         * @return bool
-         */
-
-        ///<summary>fonction entre qui retourne vrai si la date actuelle se situe entre les 2 jours reçus en paramètre</summary>
-        ///<param name="jour1">int</param>
-        ///<param name="jour2">int</param>
-        ///<param name="date">DateTime</param>
-        ///<returns>bool</returns>
+        /// <summary>fonction entre qui retourne vrai si la date actuelle se situe entre les 2 jours reçus en paramètre</summary>
+        /// <param name="jour1">int</param>
+        /// <param name="jour2">int</param>
+        /// <param name="date">DateTime</param>
+        /// <returns>bool</returns>
         public static bool entre(int jour1, int jour2, DateTime date)
         {
 
